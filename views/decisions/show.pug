@@ -7,6 +7,7 @@ mixin resolveForm(decision, resolution, errors)
   - const outcomes = [{ value: 'right', label: 'Right' }, { value: 'wrong', label: 'Wrong' }, { value: 'unclear', label: 'Unclear' }];
   +errorSummary(errors)
   form(method='post', action=`/decisions/${decision.id}/resolve`)
+    +csrfField
     fieldset#field-outcome.field(aria-describedby=outcomeError ? 'error-outcome' : false)
       legend.field__label Did it turn out as you predicted?
       .outcome-choices
@@ -58,6 +59,7 @@ block content
       if decision.reflection
         p.pre-line.outcome-banner__reflection= decision.reflection
       form(method='post', action=`/decisions/${decision.id}/reopen`)
+        +csrfField
         button.btn.btn--link(type='submit') Reopen
   else if decision.isDue
     section.detail-section
@@ -75,4 +77,5 @@ block content
       summary Delete
       p.meta This removes the decision for good.
       form(method='post', action=`/decisions/${decision.id}?_method=DELETE`)
+        +csrfField
         button.btn.btn--danger(type='submit') Yes, delete this decision
