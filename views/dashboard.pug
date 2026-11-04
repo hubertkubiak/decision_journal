@@ -5,4 +5,49 @@ block title
 
 block content
   h1.page-title= greeting
-  p.lede Your journal is being set up.
+
+  if isEmpty
+    p.lede This journal helps you find out how good your judgment really is.
+    ol.steps
+      li Write down a decision the moment you make it, with what you expect to happen and how sure you are.
+      li When its review date arrives, come back and mark whether you were right.
+      li Over time, see how often "80% sure" really means right 80% of the time.
+    p.first-run__action
+      a.btn.btn--primary(href='/decisions/new') Log your first decision
+
+  else
+    p.lede= summary
+
+    section.section(aria-labelledby='due-heading')
+      h2#due-heading.section__title Ready for review
+      .stack
+        each decision in due
+          +card(decision)
+            p.meta.card__due Review was due #{relativeDate(decision.review_on)}.
+            form.inline-resolve(method='post', action=`/decisions/${decision.id}/resolve`, aria-label=`Resolve: ${decision.title}`)
+              span.inline-resolve__label.meta How did it turn out?
+              button.btn.btn--secondary(type='submit', name='outcome', value='right') Right
+              button.btn.btn--secondary(type='submit', name='outcome', value='wrong') Wrong
+              button.btn.btn--secondary(type='submit', name='outcome', value='unclear') Unclear
+        else
+          +emptyState('Nothing to review. Future you is busy.')
+
+    section.section(aria-labelledby='upcoming-heading')
+      h2#upcoming-heading.section__title Coming up
+      ul.compact-list
+        each decision in upcoming
+          li
+            a(href=`/decisions/${decision.id}`)= decision.title
+            span.compact-list__aside= relativeDate(decision.review_on)
+        else
+          li.meta Nothing in the next 14 days.
+
+    section.section(aria-labelledby='resolved-heading')
+      h2#resolved-heading.section__title Recently resolved
+      ul.compact-list
+        each decision in recent
+          li
+            a(href=`/decisions/${decision.id}`)= decision.title
+            +statusPill(decision.outcome)
+        else
+          li.meta Nothing resolved yet.

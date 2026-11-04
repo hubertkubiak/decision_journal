@@ -5,9 +5,64 @@ block title
 
 block content
   h1.page-title Decisions
-  .stack.section
+
+  form.filter-bar(method='get', action='/decisions', data-auto-submit)
+    fieldset
+      legend.visually-hidden Status
+      .segmented
+        each status in statuses
+          label
+            input(type='radio', name='status', value=status, checked=filters.status === status)
+            span= status.charAt(0).toUpperCase() + status.slice(1)
+
+    .filter-bar__grid
+      div
+        label.label(for='filter-q') Search
+        input#filter-q.input(type='search', name='q', value=filters.q)
+      div
+        label.label(for='filter-tag') Tag
+        select#filter-tag.input(name='tag')
+          option(value='') Any tag
+          each tag in tags
+            option(value=tag, selected=tag.toLowerCase() === filters.tag.toLowerCase())= tag
+      div
+        label.label(for='filter-sort') Sort by
+        select#filter-sort.input(name='sort')
+          each sort in sorts
+            option(value=sort.value, selected=filters.sort === sort.value)= sort.label
+      button.btn.btn--secondary.filter-bar__submit(type='submit') Apply
+
+  p.result-count.meta= pluralize(total, 'decision')
+
+  ul.decision-rows
     each decision in decisions
-      +card(decision, 'h2')
+      li.decision-row(class={ 'is-due': decision.isDue, 'is-overdue': decision.isOverdue })
+        .decision-row__head
+          h2.decision-row__title
+            a(href=`/decisions/${decision.id}`)= decision.title
+          +decisionPill(decision)
+        p.decision-row__prediction= decision.prediction
+        +confidenceBar(decision.confidence)
+        .decision-row__foot.meta
+          span Review #{formatDate(decision.review_on)}
+          if decision.tags.length
+            ul.tag-list(aria-label='Tags')
+              each tag in decision.tags
+                li.tag= tag
     else
-      +emptyState('No decisions logged yet.')
-        a.btn.btn--primary(href='/decisions/new') Log your first decision
+      li
+        if isFiltered
+          +emptyState('No decisions match these filters.')
+            a.btn.btn--secondary(href='/decisions') Clear filters
+        else
+          +emptyState('No decisions logged yet.')
+            a.btn.btn--primary(href='/decisions/new') Log your first decision
+
+  if newerHref || olderHref
+    nav.pagination(aria-label='Pagination')
+      if newerHref
+        a.btn.btn--secondary(href=newerHref, rel='prev') Newer
+      else
+        span
+      if olderHref
+        a.btn.btn--secondary(href=olderHref, rel='next') Older
