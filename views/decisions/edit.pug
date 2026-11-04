@@ -1,0 +1,11 @@
+extends ../layout
+
+block title
+  | Edit: #{decision.title}
+
+block content
+  h1.page-title Edit decision
+  - const action = `/decisions/${decision.id}?_method=PATCH`;
+  - const submitLabel = 'Save changes';
+  - const cancelHref = `/decisions/${decision.id}`;
+  include _form

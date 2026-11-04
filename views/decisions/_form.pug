@@ -1,0 +1,27 @@
++errorSummary(errors)
+
+form(method='post', action=action)
+  +field('title', 'What did you decide?', values.title, { errors, required: true })
+
+  +textarea('prediction', 'What do you expect to happen?', values.prediction, { errors, required: true, rows: 3, hint: 'Be specific enough that future you can say whether it came true.' })
+
+  +confidence(values.confidence, { errors })
+
+  +dateInput('review_on', 'When should you check back?', values.review_on, { errors })
+
+  if presets
+    fieldset.field
+      legend.field__label Or use a shortcut
+      .presets
+        each preset in presets
+          label.preset
+            input(type='radio', name='preset', value=preset.value, checked=(values.preset || '') === preset.value)
+            span= preset.label
+
+  +textarea('context', 'Context', values.context, { errors, rows: 4, hint: 'Optional. Why now, and what other options did you have?' })
+
+  +field('tags', 'Tags', values.tags, { errors, hint: 'Optional. Up to 5, separated by commas.' })
+
+  .actions.form-actions
+    button.btn.btn--primary(type='submit')= submitLabel
+    a.btn.btn--secondary(href=cancelHref) Cancel

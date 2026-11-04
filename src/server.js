@@ -1,17 +1,35 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
+import session from 'express-session';
 import methodOverride from 'method-override';
 import { formatDate, pluralize, relativeDate } from './lib/dates.js';
+import { flashMiddleware } from './lib/flash.js';
+import { counts } from './repositories/decisions.js';
 import dashboardRoutes from './routes/dashboard.js';
+import decisionRoutes from './routes/decisions.js';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+let sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  sessionSecret = 'decision-journal-dev-secret';
+  console.warn('SESSION_SECRET is not set; using a development default.');
+}
+
+/** The ids a form control's aria-describedby should point at. */
+function describedBy(name, { hint, errors } = {}) {
+  const ids = [];
+  if (hint) ids.push(`hint-${name}`);
+  if (errors?.[name]) ids.push(`error-${name}`);
+  return ids.length ? ids.join(' ') : false;
+}
 
 export const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(rootDir, 'views'));
-Object.assign(app.locals, { formatDate, relativeDate, pluralize });
+Object.assign(app.locals, { formatDate, relativeDate, pluralize, describedBy });
 
 app.use(express.static(path.join(rootDir, 'public')));
 app.use(express.urlencoded({ extended: false }));
@@ -22,7 +40,25 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(
+  session({
+    name: 'decision-journal.sid',
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, sameSite: 'lax' },
+  }),
+);
+app.use(flashMiddleware);
+
+app.use((req, res, next) => {
+  const { open, resolved } = counts();
+  res.locals.footerCount = open + resolved;
+  next();
+});
+
 app.use(dashboardRoutes);
+app.use(decisionRoutes);
 
 app.use((req, res) => {
   res.status(404).render('errors/404');
