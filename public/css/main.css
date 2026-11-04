@@ -409,6 +409,7 @@ select.input { padding-right: var(--s-2); }
 
 .inline-resolve { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
 .inline-resolve__label { margin-right: var(--s-2); }
+.card__due { margin-bottom: var(--s-2); }
 
 .compact-list { list-style: none; }
 .compact-list li {
@@ -483,6 +484,8 @@ select.input { padding-right: var(--s-2); }
 .outcome-banner--wrong   { background: var(--warm-soft); border-color: var(--warm); }
 .outcome-banner--unclear { background: var(--neutral-soft); border-color: var(--rule-strong); }
 .outcome-banner .meta { color: inherit; }
+.outcome-banner__reflection { margin-top: var(--s-3); }
+.outcome-banner form { margin-top: var(--s-2); }
 
 .detail-actions { margin-top: var(--s-12); padding-top: var(--s-4); border-top: 1px solid var(--rule); }
 

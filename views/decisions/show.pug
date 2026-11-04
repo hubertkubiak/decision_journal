@@ -1,5 +1,25 @@
 extends ../layout
 
+mixin resolveForm(decision, resolution, errors)
+  - const chosen = resolution && resolution.outcome;
+  - const reflection = resolution && resolution.reflection !== undefined ? resolution.reflection : decision.reflection;
+  - const outcomeError = errors && errors.outcome;
+  - const outcomes = [{ value: 'right', label: 'Right' }, { value: 'wrong', label: 'Wrong' }, { value: 'unclear', label: 'Unclear' }];
+  +errorSummary(errors)
+  form(method='post', action=`/decisions/${decision.id}/resolve`)
+    fieldset#field-outcome.field(aria-describedby=outcomeError ? 'error-outcome' : false)
+      legend.field__label Did it turn out as you predicted?
+      .outcome-choices
+        each outcome in outcomes
+          label.outcome-choice(class=`outcome-choice--${outcome.value}`)
+            input(type='radio', name='outcome', value=outcome.value, checked=chosen === outcome.value)
+            span= outcome.label
+      if outcomeError
+        p.field__error#error-outcome= outcomeError
+    +textarea('reflection', 'Reflection', reflection, { errors, rows: 4, hint: 'Optional. What did you miss, or get right?' })
+    .form-actions
+      button.btn.btn--primary(type='submit') Resolve decision
+
 block title
   = decision.title
 
@@ -24,6 +44,29 @@ block content
     section.detail-section
       h2.detail-section__title.label Context
       p.pre-line= decision.context
+
+  if decision.status === 'resolved'
+    section.outcome-banner(class=`outcome-banner--${decision.outcome}`)
+      case decision.outcome
+        when 'right'
+          h2.outcome-banner__title You were right.
+        when 'wrong'
+          h2.outcome-banner__title You were wrong.
+        default
+          h2.outcome-banner__title The outcome was unclear.
+      p.meta Resolved #{formatDate(decision.resolved_at)}
+      if decision.reflection
+        p.pre-line.outcome-banner__reflection= decision.reflection
+      form(method='post', action=`/decisions/${decision.id}/reopen`)
+        button.btn.btn--link(type='submit') Reopen
+  else if decision.isDue
+    section.detail-section
+      h2.section__title Time to review
+      +resolveForm(decision, resolution, errors)
+  else
+    details.disclosure.detail-section(open=Boolean(errors))
+      summary Resolve early
+      +resolveForm(decision, resolution, errors)
 
   .detail-actions.actions
     if decision.status === 'open'
