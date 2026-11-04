@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import session from 'express-session';
 import methodOverride from 'method-override';
+import { csrfProtection } from './lib/csrf.js';
 import { formatDate, pluralize, relativeDate } from './lib/dates.js';
 import { flashMiddleware } from './lib/flash.js';
 import { counts } from './repositories/decisions.js';
@@ -50,6 +51,8 @@ app.use(
     cookie: { httpOnly: true, sameSite: 'lax' },
   }),
 );
+// Before the flash middleware, so a rejected request doesn't use up a pending message.
+app.use(csrfProtection);
 app.use(flashMiddleware);
 
 app.use((req, res, next) => {

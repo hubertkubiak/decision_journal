@@ -1,6 +1,7 @@
 +errorSummary(errors)
 
 form(method='post', action=action)
+  +csrfField
   +field('title', 'What did you decide?', values.title, { errors, required: true })
 
   +textarea('prediction', 'What do you expect to happen?', values.prediction, { errors, required: true, rows: 3, hint: 'Be specific enough that future you can say whether it came true.' })

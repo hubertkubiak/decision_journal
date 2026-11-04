@@ -25,6 +25,7 @@ block content
           +card(decision)
             p.meta.card__due Review was due #{relativeDate(decision.review_on)}.
             form.inline-resolve(method='post', action=`/decisions/${decision.id}/resolve`, aria-label=`Resolve: ${decision.title}`)
+              +csrfField
               span.inline-resolve__label.meta How did it turn out?
               button.btn.btn--secondary(type='submit', name='outcome', value='right') Right
               button.btn.btn--secondary(type='submit', name='outcome', value='wrong') Wrong

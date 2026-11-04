@@ -1,3 +1,8 @@
+//- Every form that changes data needs this. GET forms must not include it,
+//- or the token would end up in the URL.
+mixin csrfField
+  input(type='hidden', name='_csrf', value=csrfToken)
+
 //- Field names map to ids as `field-<name>`, which the error summary links to.
 
 mixin fieldShell(name, label, opts = {})
