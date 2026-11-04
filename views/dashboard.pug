@@ -51,3 +51,12 @@ block content
             +statusPill(decision.outcome)
         else
           li.meta Nothing resolved yet.
+
+    section.section(aria-labelledby='calibration-heading')
+      h2#calibration-heading.section__title Your calibration at a glance
+      if calibrationSentence
+        p.glance= calibrationSentence
+        p.section__more
+          a(href='/calibration') See the full report
+      else
+        p.meta Resolve #{pluralize(calibrationRemaining, 'more decision')} with a clear outcome to see how calibrated you are.

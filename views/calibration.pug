@@ -1,0 +1,75 @@
+extends layout
+
+block title
+  | Calibration
+
+block append head
+  meta(name='description', content='How often you were right at each confidence level.')
+
+block content
+  h1.page-title Calibration
+
+  if !hasEnoughData
+    +emptyState(`Calibration needs at least 5 resolved decisions with a clear outcome. You need ${remaining} more.`)
+      a.btn.btn--primary(href='/decisions?status=open') See open decisions
+
+  else
+    p.lede= sentence
+
+    .stats
+      .stat
+        span.label.stat__label Resolved
+        span.stat__value= counts.resolved
+        if counts.unclear
+          p.stat__note #{counts.unclear} unclear, not scored
+      .stat
+        span.label.stat__label Accuracy
+        span.stat__value= percent(summary.accuracy)
+        p.stat__note #{summary.hits} of #{summary.n} right
+      .stat
+        span.label.stat__label Brier score
+        span.stat__value= summary.brier.toFixed(2)
+        p.stat__note 0 is perfect, 0.25 is a coin flip.
+
+    section.section(aria-labelledby='chart-heading')
+      h2#chart-heading.section__title Confidence vs. reality
+
+      //- The table below carries the same data for assistive technology.
+      .chart(role='img', aria-label='Bar chart of your hit rate at each confidence level. The table below it has the same data.')
+        each bucket in buckets
+          .chart__column(class=`chart__column--${bucket.verdict}`)
+            span.chart__value= bucket.n ? percent(bucket.hitRate) : '–'
+            .chart__plot(style=`--value: ${(bucket.hitRate || 0).toFixed(3)}; --expected: ${bucket.expected.toFixed(3)}`)
+              .chart__bar
+              .chart__tick
+            span.chart__name= bucket.name
+            span.chart__n n = #{bucket.n}
+            span.chart__verdict.chart__verdict--short= bucket.short
+            span.chart__verdict.chart__verdict--long= bucket.label
+
+      p.chart-legend Each bar is how often you were right. The tick marks how sure you were on average, so a bar reaching its tick is perfectly calibrated.
+
+      .table-wrap(role='region', aria-label='Calibration table', tabindex='0')
+        table.data-table
+          caption Calibration by confidence level
+          thead
+            tr
+              th(scope='col') Confidence
+              th(scope='col') Decisions
+              th(scope='col') Right
+              th(scope='col') Hit rate
+              th(scope='col') Expected
+              th(scope='col') Verdict
+          tbody
+            each bucket in buckets
+              tr
+                th(scope='row') #{bucket.min}–#{bucket.max}%
+                td= bucket.n
+                td= bucket.hits
+                td= bucket.n ? percent(bucket.hitRate) : '–'
+                td= bucket.n ? percent(bucket.expected) : '–'
+                td= bucket.label
+
+    section.section.prose(aria-labelledby='explain-heading')
+      h2#explain-heading.section__title What calibration means
+      p You are well calibrated when your confidence matches reality: of everything you were 80% sure about, about 80% turned out right. Bars below their tick mean you were more sure than the results justified, and bars above it mean you could have trusted yourself more. It says nothing about whether your decisions were good, only whether you knew how much you knew.
