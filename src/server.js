@@ -6,6 +6,7 @@ import methodOverride from 'method-override';
 import { formatDate, pluralize, relativeDate } from './lib/dates.js';
 import { flashMiddleware } from './lib/flash.js';
 import { counts } from './repositories/decisions.js';
+import calibrationRoutes from './routes/calibration.js';
 import dashboardRoutes from './routes/dashboard.js';
 import decisionRoutes from './routes/decisions.js';
 
@@ -59,6 +60,7 @@ app.use((req, res, next) => {
 
 app.use(dashboardRoutes);
 app.use(decisionRoutes);
+app.use(calibrationRoutes);
 
 app.use((req, res) => {
   res.status(404).render('errors/404');

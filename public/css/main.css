@@ -262,7 +262,7 @@ main:focus { outline: none; }
   transition: border-color 120ms;
 }
 .card:hover { border-color: var(--rule-strong); }
-.card.is-overdue { border-left: 3px solid var(--warm); }
+.card.is-overdue { border-left: 3px solid var(--warm); padding-left: calc(var(--s-6) - 2px); }
 
 .card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-3); }
 .card__title { font-size: var(--step-1); font-weight: 400; min-width: 0; overflow-wrap: anywhere; }
