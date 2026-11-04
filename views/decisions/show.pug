@@ -1,0 +1,35 @@
+extends ../layout
+
+block title
+  = decision.title
+
+block content
+  h1.page-title= decision.title
+
+  .detail-meta.meta
+    +decisionPill(decision)
+    span Logged #{formatDate(decision.created_at)}
+    span ·
+    span Review #{formatDate(decision.review_on)} (#{relativeDate(decision.review_on)})
+    if decision.tags.length
+      span ·
+      ul.tag-list(aria-label='Tags')
+        each tag in decision.tags
+          li.tag= tag
+
+  blockquote.prediction.pre-line= decision.prediction
+  +confidenceBar(decision.confidence).prediction-confidence
+
+  if decision.context
+    section.detail-section
+      h2.detail-section__title.label Context
+      p.pre-line= decision.context
+
+  .detail-actions.actions
+    if decision.status === 'open'
+      a.btn.btn--secondary(href=`/decisions/${decision.id}/edit`) Edit
+    details.disclosure.disclosure--danger
+      summary Delete
+      p.meta This removes the decision for good.
+      form(method='post', action=`/decisions/${decision.id}?_method=DELETE`)
+        button.btn.btn--danger(type='submit') Yes, delete this decision

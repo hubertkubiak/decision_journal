@@ -1,0 +1,12 @@
+extends ../layout
+
+block title
+  | New decision
+
+block content
+  h1.page-title New decision
+  p.lede Write it down now, while you still remember why.
+  - const action = '/decisions';
+  - const submitLabel = 'Log decision';
+  - const cancelHref = '/decisions';
+  include _form

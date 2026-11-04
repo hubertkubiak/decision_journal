@@ -36,7 +36,7 @@ mixin confidence(value, opts = {})
 mixin dateInput(name, label, value, opts = {})
   +field(name, label, value, Object.assign({}, opts, { type: 'date' }))
 
-mixin errorSummary(errors, labels)
+mixin errorSummary(errors)
   if errors && Object.keys(errors).length
     .error-summary(role='alert', tabindex='-1')
       h2.error-summary__title Please fix the following

@@ -1,0 +1,13 @@
+extends ../layout
+
+block title
+  | Decisions
+
+block content
+  h1.page-title Decisions
+  .stack.section
+    each decision in decisions
+      +card(decision, 'h2')
+    else
+      +emptyState('No decisions logged yet.')
+        a.btn.btn--primary(href='/decisions/new') Log your first decision
