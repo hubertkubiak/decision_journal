@@ -1,0 +1,46 @@
+//- Field names map to ids as `field-<name>`, which the error summary links to.
+
+mixin fieldShell(name, label, opts = {})
+  - const error = opts.errors && opts.errors[name];
+  .field(class={ 'field--error': error })
+    label.field__label(for=`field-${name}`)= label
+    block
+    if opts.hint
+      p.field__hint(id=`hint-${name}`)= opts.hint
+    if error
+      p.field__error(id=`error-${name}`)= error
+
+mixin field(name, label, value, opts = {})
+  - const error = opts.errors && opts.errors[name];
+  +fieldShell(name, label, opts)
+    input.input(id=`field-${name}`, name=name, type=opts.type || 'text', value=value, required=opts.required, autocomplete='off', aria-invalid=error ? 'true' : false, aria-describedby=describedBy(name, opts))&attributes(attributes)
+
+mixin textarea(name, label, value, opts = {})
+  - const error = opts.errors && opts.errors[name];
+  +fieldShell(name, label, opts)
+    textarea.input(id=`field-${name}`, name=name, rows=opts.rows || 3, required=opts.required, aria-invalid=error ? 'true' : false, aria-describedby=describedBy(name, opts))&attributes(attributes)= value
+
+//- A range has no visible value without JS, so tick labels keep it readable;
+//- enhance.js reveals the exact number in the <output>.
+mixin confidence(value, opts = {})
+  - const error = opts.errors && opts.errors.confidence;
+  - const current = Number.isInteger(value) ? value : 70;
+  +fieldShell('confidence', 'How confident are you?', opts)
+    .confidence-input
+      input.range(id='field-confidence', name='confidence', type='range', min='50', max='99', step='1', value=current, aria-invalid=error ? 'true' : false, aria-describedby=describedBy('confidence', opts))
+      output.confidence-input__output(for='field-confidence', hidden) #{current}%
+    .range-ticks(aria-hidden='true')
+      each tick in [50, 60, 70, 80, 90, 99]
+        span= tick
+
+mixin dateInput(name, label, value, opts = {})
+  +field(name, label, value, Object.assign({}, opts, { type: 'date' }))
+
+mixin errorSummary(errors, labels)
+  if errors && Object.keys(errors).length
+    .error-summary(role='alert', tabindex='-1')
+      h2.error-summary__title Please fix the following
+      ul
+        each message, name in errors
+          li
+            a(href=`#field-${name}`)= message

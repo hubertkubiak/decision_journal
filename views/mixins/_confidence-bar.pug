@@ -1,0 +1,6 @@
+mixin confidenceBar(value, tone = 'ink')
+  .confidence&attributes(attributes)
+    span.visually-hidden Confidence:
+    .confidence__track(aria-hidden='true')
+      .confidence__fill(class=`confidence__fill--${tone}`, style=`--value: ${value / 100}`)
+    span.confidence__value #{value}%

@@ -1,0 +1,24 @@
+{
+  "name": "decision-journal",
+  "version": "1.0.0",
+  "description": "Log decisions with a confidence level, review them later, and see how well-calibrated your judgment is.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/db/seed.js",
+    "reset": "node src/db/seed.js --reset",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^4.22.3",
+    "express-session": "^1.19.0",
+    "method-override": "^3.0.0",
+    "pug": "^3.0.4"
+  }
+}

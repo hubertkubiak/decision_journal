@@ -1,0 +1,3 @@
+.flash-region(role='status')
+  if flash
+    p.flash(class=`flash--${flash.type}`)= flash.message

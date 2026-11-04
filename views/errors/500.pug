@@ -1,0 +1,10 @@
+extends ../layout
+
+block title
+  | Something went wrong
+
+block content
+  h1.page-title Something went wrong
+  p.lede The journal hit an unexpected error. Your decisions are safe; try again in a moment.
+  if stack
+    pre.stack-trace= stack

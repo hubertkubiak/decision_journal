@@ -1,0 +1,9 @@
+extends ../layout
+
+block title
+  | Not found
+
+block content
+  h1.page-title Not found
+  +emptyState("This page doesn't exist. Maybe it was a bad decision.")
+    a.btn.btn--secondary(href='/') Back to today

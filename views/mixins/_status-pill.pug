@@ -1,0 +1,24 @@
+mixin statusPill(status)
+  case status
+    when 'due'
+      span.pill.pill--due Due
+    when 'overdue'
+      span.pill.pill--overdue Overdue
+    when 'right'
+      span.pill.pill--right Right
+    when 'wrong'
+      span.pill.pill--wrong Wrong
+    when 'unclear'
+      span.pill.pill--unclear Unclear
+    default
+      span.pill.pill--open Open
+
+mixin decisionPill(decision)
+  if decision.status === 'resolved'
+    +statusPill(decision.outcome)
+  else if decision.isOverdue
+    +statusPill('overdue')
+  else if decision.isDue
+    +statusPill('due')
+  else
+    +statusPill('open')

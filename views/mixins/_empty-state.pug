@@ -1,0 +1,10 @@
+mixin emptyState(message)
+  .empty-state&attributes(attributes)
+    svg.empty-state__art(viewBox='0 0 48 48', width='48', height='48', fill='none', stroke='currentColor', stroke-width='1.5', stroke-linecap='round', stroke-linejoin='round', aria-hidden='true')
+      path(d='M12 6h20l6 6v30H12z')
+      path(d='M32 6v6h6')
+      path(d='M18 22h14M18 29h14M18 36h8')
+    p= message
+    if block
+      .empty-state__action
+        block

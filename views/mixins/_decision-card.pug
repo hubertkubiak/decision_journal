@@ -1,0 +1,12 @@
+//- Wraps any caller-supplied content, e.g. the inline resolve form on the dashboard.
+mixin card(decision, heading = 'h3')
+  article.card(class={ 'is-due': decision.isDue, 'is-overdue': decision.isOverdue })&attributes(attributes)
+    .card__header
+      #{heading}.card__title
+        a(href=`/decisions/${decision.id}`)= decision.title
+      +decisionPill(decision)
+    p.card__prediction= decision.prediction
+    +confidenceBar(decision.confidence)
+    if block
+      .card__body
+        block

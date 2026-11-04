@@ -1,0 +1,6 @@
+footer.site-footer
+  p
+    if footerCount !== undefined
+      | #{pluralize(footerCount, 'decision')} logged.
+    else
+      | Decision Journal

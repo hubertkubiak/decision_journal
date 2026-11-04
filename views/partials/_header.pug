@@ -1,0 +1,8 @@
+header.site-header
+  .site-header__inner
+    a.wordmark(href='/') Decision Journal
+    nav.site-nav(aria-label='Main')
+      a(href='/', aria-current=currentPath === '/' ? 'page' : false) Today
+      a(href='/decisions', aria-current=currentPath.startsWith('/decisions') ? 'page' : false) Decisions
+      a(href='/calibration', aria-current=currentPath === '/calibration' ? 'page' : false) Calibration
+    a.btn.btn--primary.site-header__action(href='/decisions/new') New decision
