@@ -127,6 +127,10 @@ test('date helpers: real dates only, month-end clamping, relative wording', () =
   assert.equal(relativeDate('2026-02-01', NOW), 'tomorrow');
   assert.equal(relativeDate('2026-02-03', NOW), 'in 3 days');
   assert.equal(relativeDate('2026-01-17', NOW), '2 weeks ago');
+  assert.equal(relativeDate('2027-01-16', NOW), 'in 1 year'); // 350 days
+  assert.equal(relativeDate('2027-01-30', NOW), 'in 1 year'); // 364 days
+  assert.equal(relativeDate('2025-02-10', NOW), '1 year ago'); // 355 days
+  assert.equal(relativeDate('2026-12-31', NOW), 'in 11 months'); // 334 days
 });
 
 test('SQLite timestamps are read as UTC', () => {

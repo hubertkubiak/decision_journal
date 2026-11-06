@@ -84,10 +84,12 @@ export function relativeDate(value, now = new Date()) {
   if (days === -1) return 'yesterday';
 
   const abs = Math.abs(days);
+  // Pick the unit from the rounded value, so 350 days reads "1 year", not "12 months".
+  const months = Math.round(abs / 30);
   let span;
   if (abs < 14) span = pluralize(abs, 'day');
   else if (abs < 60) span = pluralize(Math.round(abs / 7), 'week');
-  else if (abs < 365) span = pluralize(Math.round(abs / 30), 'month');
+  else if (months < 12) span = pluralize(months, 'month');
   else span = pluralize(Math.round(abs / 365), 'year');
   return days > 0 ? `in ${span}` : `${span} ago`;
 }
